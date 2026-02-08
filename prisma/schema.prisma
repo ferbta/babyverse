@@ -15,6 +15,7 @@ model User {
   image         String?
   password      String?   // For email/password auth
   emailVerified DateTime?
+  emailNotifications Boolean @default(true)
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
 
