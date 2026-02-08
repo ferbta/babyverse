@@ -50,12 +50,12 @@ export default function LoginPage() {
         <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-pink-50 via-blue-50 to-purple-50 dark:from-gray-900 dark:via-purple-900 dark:to-pink-900 p-4">
             <Card className="w-full max-w-md shadow-2xl">
                 <CardHeader className="space-y-3 text-center">
-                    <div className="mx-auto w-16 h-16 bg-gradient-to-br from-pink-400 to-purple-500 rounded-2xl flex items-center justify-center shadow-lg">
-                        <Baby className="w-9 h-9 text-white" />
+                    <div className="flex flex-col items-center">
+                        <img src="/logo.png" alt="BabyVerse Logo" className="w-16 h-16 rounded-2xl shadow-xl mb-4" />
+                        <h1 className="text-4xl font-bold bg-gradient-to-r from-pink-500 to-purple-600 bg-clip-text text-transparent">
+                            BabyVerse
+                        </h1>
                     </div>
-                    <CardTitle className="text-3xl font-bold bg-gradient-to-r from-pink-500 to-purple-600 bg-clip-text text-transparent">
-                        BabyVerse
-                    </CardTitle>
                     <CardDescription className="text-base">
                         Hệ thống quản lý thông tin con yêu
                     </CardDescription>

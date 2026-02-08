@@ -86,9 +86,7 @@ export default function DashboardLayout({
                         <div className="flex flex-col h-full">
                             <div className="flex items-center justify-between p-4 border-b">
                                 <div className="flex items-center gap-2">
-                                    <div className="w-8 h-8 bg-gradient-to-br from-pink-400 to-purple-500 rounded-lg flex items-center justify-center">
-                                        <Baby className="w-5 h-5 text-white" />
-                                    </div>
+                                    <img src="/logo.png" alt="BabyVerse Logo" className="w-8 h-8 rounded-lg shadow-sm" />
                                     <span className="font-bold text-lg bg-gradient-to-r from-pink-500 to-purple-600 bg-clip-text text-transparent">
                                         BabyVerse
                                     </span>
@@ -144,9 +142,7 @@ export default function DashboardLayout({
                 <div className="hidden lg:fixed lg:inset-y-0 lg:flex lg:w-64 lg:flex-col">
                     <div className="flex flex-col flex-grow bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl border-r overflow-y-auto">
                         <div className="flex items-center gap-2 px-4 py-6">
-                            <div className="w-10 h-10 bg-gradient-to-br from-pink-400 to-purple-500 rounded-xl flex items-center justify-center shadow-lg">
-                                <Baby className="w-6 h-6 text-white" />
-                            </div>
+                            <img src="/logo.png" alt="BabyVerse Logo" className="w-10 h-10 rounded-xl shadow-lg" />
                             <span className="font-bold text-xl bg-gradient-to-r from-pink-500 to-purple-600 bg-clip-text text-transparent">
                                 BabyVerse
                             </span>
@@ -231,9 +227,12 @@ export default function DashboardLayout({
                             <Menu className="h-6 w-6" />
                         </Button>
                         <div className="flex-1">
-                            <span className="font-bold text-lg bg-gradient-to-r from-pink-500 to-purple-600 bg-clip-text text-transparent">
-                                BabyVerse
-                            </span>
+                            <div className="flex items-center gap-2">
+                                <img src="/logo.png" alt="BabyVerse Logo" className="w-8 h-8 rounded-lg shadow-sm" />
+                                <span className="font-bold text-lg bg-gradient-to-r from-pink-500 to-purple-600 bg-clip-text text-transparent">
+                                    BabyVerse
+                                </span>
+                            </div>
                         </div>
                         <DropdownMenu>
                             <DropdownMenuTrigger asChild>
