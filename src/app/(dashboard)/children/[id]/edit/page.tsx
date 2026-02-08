@@ -14,6 +14,7 @@ import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Baby, Loader2, ArrowLeft } from 'lucide-react'
 import Link from 'next/link'
 import { useChildren } from '@/components/providers/ChildProvider'
+import { formatDateForInput } from '@/lib/dateUtils'
 
 const childSchema = z.object({
     name: z.string().min(2, 'Tên phải có ít nhất 2 ký tự'),
@@ -61,7 +62,7 @@ export default function EditChildPage({ params }: { params: Promise<{ id: string
                         name: data.name,
                         nickname: data.nickname,
                         gender: data.gender,
-                        birthDate: new Date(data.birthDate).toISOString().split('T')[0],
+                        birthDate: formatDateForInput(data.birthDate),
                         bloodType: data.bloodType,
                         birthWeight: data.birthWeight?.toString(),
                         birthHeight: data.birthHeight?.toString(),
@@ -207,11 +208,12 @@ export default function EditChildPage({ params }: { params: Promise<{ id: string
                         {/* Blood Type */}
                         <div className="space-y-2">
                             <Label>Nhóm máu</Label>
-                            <Select onValueChange={(value) => setValue('bloodType', value)} value={bloodType || ""}>
+                            <Select onValueChange={(value) => setValue('bloodType', value === 'none' ? undefined : value)} value={bloodType || 'none'}>
                                 <SelectTrigger>
                                     <SelectValue placeholder="Chọn nhóm máu (nếu biết)" />
                                 </SelectTrigger>
                                 <SelectContent>
+                                    <SelectItem value="none">Không rõ</SelectItem>
                                     <SelectItem value="A+">A+</SelectItem>
                                     <SelectItem value="A-">A-</SelectItem>
                                     <SelectItem value="B+">B+</SelectItem>
@@ -253,11 +255,12 @@ export default function EditChildPage({ params }: { params: Promise<{ id: string
                         {/* Birth Condition */}
                         <div className="space-y-2">
                             <Label>Hình thức sinh</Label>
-                            <Select onValueChange={(value) => setValue('birthCondition', value)} value={birthCondition || ""}>
+                            <Select onValueChange={(value) => setValue('birthCondition', value === 'none' ? undefined : value)} value={birthCondition || 'none'}>
                                 <SelectTrigger>
                                     <SelectValue placeholder="Chọn hình thức sinh" />
                                 </SelectTrigger>
                                 <SelectContent>
+                                    <SelectItem value="none">Không rõ</SelectItem>
                                     <SelectItem value="natural">Sinh tự nhiên</SelectItem>
                                     <SelectItem value="c-section">Mổ đẻ</SelectItem>
                                     <SelectItem value="premature">Sinh non</SelectItem>

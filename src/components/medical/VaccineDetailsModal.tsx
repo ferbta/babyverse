@@ -12,6 +12,7 @@ import { Vaccination } from '@/types'
 import { Calendar, MapPin, Syringe, Trash2, AlertCircle, Clock } from 'lucide-react'
 import { format } from 'date-fns'
 import { vi } from 'date-fns/locale'
+import { formatDateForInput } from '@/lib/dateUtils'
 
 interface VaccineDetailsModalProps {
     vaccination: Vaccination & { schedule?: { name: string, nameVi: string, description?: string | null } | null }
@@ -27,7 +28,7 @@ export function VaccineDetailsModal({ vaccination, isOpen, onClose, onUpdate, on
     const [formData, setFormData] = useState({
         name: vaccination.name || vaccination.schedule?.nameVi || '',
         status: vaccination.status,
-        completedDate: vaccination.completedDate ? new Date(vaccination.completedDate).toISOString().split('T')[0] : '',
+        completedDate: vaccination.completedDate ? formatDateForInput(vaccination.completedDate) : '',
         location: vaccination.location || '',
         notes: vaccination.notes || '',
         reactions: vaccination.reactions || '',
@@ -38,7 +39,7 @@ export function VaccineDetailsModal({ vaccination, isOpen, onClose, onUpdate, on
             setFormData({
                 name: vaccination.name || vaccination.schedule?.nameVi || '',
                 status: vaccination.status,
-                completedDate: vaccination.completedDate ? new Date(vaccination.completedDate).toISOString().split('T')[0] : '',
+                completedDate: vaccination.completedDate ? formatDateForInput(vaccination.completedDate) : '',
                 location: vaccination.location || '',
                 notes: vaccination.notes || '',
                 reactions: vaccination.reactions || '',

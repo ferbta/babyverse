@@ -18,6 +18,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import { Plus, Loader2 } from 'lucide-react'
+import { getLocalDateString } from '@/lib/dateUtils'
 
 const growthSchema = z.object({
     measureDate: z.string().min(1, 'Ngày đo là bắt buộc'),
@@ -47,7 +48,7 @@ export function AddGrowthRecordModal({ childId, onRecordAdded }: AddGrowthRecord
     } = useForm<GrowthFormData>({
         resolver: zodResolver(growthSchema),
         defaultValues: {
-            measureDate: new Date().toISOString().split('T')[0],
+            measureDate: getLocalDateString(),
         }
     })
 

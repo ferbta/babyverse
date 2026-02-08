@@ -166,11 +166,12 @@ export default function NewChildPage() {
                         {/* Blood Type */}
                         <div className="space-y-2">
                             <Label>Nhóm máu</Label>
-                            <Select onValueChange={(value) => setValue('bloodType', value)} value={bloodType}>
+                            <Select onValueChange={(value) => setValue('bloodType', value === 'none' ? undefined : value)} value={bloodType || 'none'}>
                                 <SelectTrigger>
                                     <SelectValue placeholder="Chọn nhóm máu (nếu biết)" />
                                 </SelectTrigger>
                                 <SelectContent>
+                                    <SelectItem value="none">Không rõ</SelectItem>
                                     <SelectItem value="A+">A+</SelectItem>
                                     <SelectItem value="A-">A-</SelectItem>
                                     <SelectItem value="B+">B+</SelectItem>
@@ -212,11 +213,12 @@ export default function NewChildPage() {
                         {/* Birth Condition */}
                         <div className="space-y-2">
                             <Label>Hình thức sinh</Label>
-                            <Select onValueChange={(value) => setValue('birthCondition', value)} value={birthCondition}>
+                            <Select onValueChange={(value) => setValue('birthCondition', value === 'none' ? undefined : value)} value={birthCondition || 'none'}>
                                 <SelectTrigger>
                                     <SelectValue placeholder="Chọn hình thức sinh" />
                                 </SelectTrigger>
                                 <SelectContent>
+                                    <SelectItem value="none">Không rõ</SelectItem>
                                     <SelectItem value="natural">Sinh tự nhiên</SelectItem>
                                     <SelectItem value="c-section">Mổ đẻ</SelectItem>
                                     <SelectItem value="premature">Sinh non</SelectItem>

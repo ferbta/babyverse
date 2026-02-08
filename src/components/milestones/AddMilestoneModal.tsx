@@ -25,6 +25,7 @@ import {
     SelectValue,
 } from '@/components/ui/select'
 import { Plus, Loader2, Sparkles } from 'lucide-react'
+import { getLocalDateString } from '@/lib/dateUtils'
 
 const milestoneSchema = z.object({
     title: z.string().min(1, 'Tiêu đề là bắt buộc'),
@@ -61,7 +62,7 @@ export function AddMilestoneModal({ childId, onMilestoneAdded }: AddMilestoneMod
     } = useForm<MilestoneFormData>({
         resolver: zodResolver(milestoneSchema),
         defaultValues: {
-            achievedDate: new Date().toISOString().split('T')[0],
+            achievedDate: getLocalDateString(),
             category: 'physical'
         }
     })

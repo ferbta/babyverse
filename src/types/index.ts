@@ -92,3 +92,20 @@ export type NutritionLog = {
     createdAt: Date
 }
 
+// Reminder types
+export type ReminderType = 'vaccination' | 'medical_visit' | 'medication' | 'birthday' | 'milestone'
+
+export type Reminder = {
+    id: string
+    userId: string
+    childId?: string | null
+    type: string
+    title: string
+    reminderDate: Date
+    sent: boolean
+    dismissed: boolean
+    relatedId?: string | null
+    createdAt: Date
+}
+
+

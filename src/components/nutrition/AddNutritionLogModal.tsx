@@ -25,17 +25,20 @@ import {
     SelectValue,
 } from '@/components/ui/select'
 import { Plus, Loader2 } from 'lucide-react'
+import { getLocalDateTimeString } from '@/lib/dateUtils'
+
 
 const nutritionSchema = z.object({
     feedingDate: z.string().min(1, 'Ngày giờ là bắt buộc'),
     type: z.enum(['breastfeeding', 'formula', 'solid', 'snack', 'water'], {
-        required_error: 'Loại bữa ăn là bắt buộc',
+        message: 'Loại bữa ăn là bắt buộc',
     }),
     foodItems: z.string().optional(),
     amount: z.string().optional().refine(val => !val || !isNaN(parseFloat(val)), 'Lượng phải là số'),
     unit: z.enum(['ml', 'oz', 'g', 'serving']).optional(),
     notes: z.string().optional(),
 })
+
 
 type NutritionFormData = z.infer<typeof nutritionSchema>
 
@@ -59,7 +62,7 @@ export function AddNutritionLogModal({ childId, onLogAdded }: AddNutritionLogMod
     } = useForm<NutritionFormData>({
         resolver: zodResolver(nutritionSchema),
         defaultValues: {
-            feedingDate: new Date().toISOString().slice(0, 16),
+            feedingDate: getLocalDateTimeString(),
         }
     })
 

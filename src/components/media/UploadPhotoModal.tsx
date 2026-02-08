@@ -19,6 +19,7 @@ import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import { Upload, Loader2, ImagePlus, X } from 'lucide-react'
 import Image from 'next/image'
+import { getLocalDateString } from '@/lib/dateUtils'
 
 const photoSchema = z.object({
     caption: z.string().optional(),
@@ -48,7 +49,7 @@ export function UploadPhotoModal({ childId, onPhotoUploaded }: UploadPhotoModalP
     } = useForm<PhotoFormData>({
         resolver: zodResolver(photoSchema),
         defaultValues: {
-            takenDate: new Date().toISOString().split('T')[0],
+            takenDate: getLocalDateString(),
         }
     })
 
