@@ -13,12 +13,13 @@ export async function GET(req: Request) {
 
     try {
         const now = new Date()
+        const nextRun = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000) // 7 days from now
 
-        // Find all reminders that are due and haven't been sent yet
+        // Find all reminders from now until the next cron run
         const pendingReminders = await prisma.reminder.findMany({
             where: {
                 reminderDate: {
-                    lte: now
+                    lte: nextRun
                 },
                 sent: false,
                 dismissed: false,

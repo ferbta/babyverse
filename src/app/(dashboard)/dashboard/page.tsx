@@ -269,13 +269,6 @@ export default function DashboardPage() {
                         </Card>
                     </div>
 
-                    {/* Alerts */}
-                    <Alert className="border-amber-200 bg-amber-50 dark:bg-amber-900/10">
-                        <AlertCircle className="h-4 w-4 text-amber-500" />
-                        <AlertDescription className="text-amber-800 dark:text-amber-200">
-                            Tính năng nhắc nhở và cảnh báo tiêm chủng sẽ sớm được cập nhật!
-                        </AlertDescription>
-                    </Alert>
                 </>
             )}
         </div>
