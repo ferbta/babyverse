@@ -38,6 +38,7 @@ const navigation = [
     { name: 'Cột mốc phát triển', href: '/milestones', icon: Calendar },
     { name: 'Bộ sưu tập', href: '/media', icon: Image },
     { name: 'Nhắc nhở', href: '/reminders', icon: Bell },
+    { name: 'Cài đặt', href: '/settings', icon: Settings },
 ]
 
 import { ChildProvider } from '@/components/providers/ChildProvider'
