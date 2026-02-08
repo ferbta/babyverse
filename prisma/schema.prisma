@@ -1,0 +1,321 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+// User model for authentication
+model User {
+  id            String    @id @default(auto()) @map("_id") @db.ObjectId
+  email         String    @unique
+  name          String?
+  image         String?
+  password      String?   // For email/password auth
+  emailVerified DateTime?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  children      Child[]
+  reminders     Reminder[]
+  accounts      Account[]
+  sessions      Session[]
+}
+
+// NextAuth models
+model Account {
+  id                String  @id @default(auto()) @map("_id") @db.ObjectId
+  userId            String  @db.ObjectId
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.String
+  access_token      String? @db.String
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.String
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(auto()) @map("_id") @db.ObjectId
+  sessionToken String   @unique
+  userId       String   @db.ObjectId
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model VerificationToken {
+  id         String   @id @default(auto()) @map("_id") @db.ObjectId
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+// Child profile model
+model Child {
+  id             String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId         String   @db.ObjectId
+  user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  name           String
+  nickname       String?
+  avatar         String?   // Cloudinary URL
+  birthDate      DateTime
+  gender         String    // "male" | "female" | "other"
+  bloodType      String?   // "A+" | "A-" | "B+" | "B-" | "AB+" | "AB-" | "O+" | "O-"
+  birthWeight    Float?    // in kg
+  birthHeight    Float?    // in cm
+  birthCondition String?   // "natural" | "c-section" | "premature"
+
+  isActive       Boolean  @default(true)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  medicalVisits  MedicalVisit[]
+  vaccinations   Vaccination[]
+  growthRecords  GrowthRecord[]
+  feedingLogs    FeedingLog[]
+  allergies      Allergy[]
+  activityLogs   ActivityLog[]
+  milestones     Milestone[]
+  media          Media[]
+  reminders      Reminder[]
+  familyMembers  FamilyMember[]
+
+  @@index([userId])
+}
+
+// Medical visit model
+model MedicalVisit {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  childId     String   @db.ObjectId
+  child       Child    @relation(fields: [childId], references: [id], onDelete: Cascade)
+
+  visitDate   DateTime
+  hospital    String?
+  doctor      String?
+  diagnosis   String?
+  notes       String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  prescriptions Prescription[]
+  media         Media[]
+
+  @@index([childId])
+}
+
+// Prescription model
+model Prescription {
+  id              String   @id @default(auto()) @map("_id") @db.ObjectId
+  medicalVisitId  String   @db.ObjectId
+  medicalVisit    MedicalVisit @relation(fields: [medicalVisitId], references: [id], onDelete: Cascade)
+
+  medication      String
+  dosage          String?
+  frequency       String?
+  startDate       DateTime
+  endDate         DateTime?
+  notes           String?
+  createdAt       DateTime @default(now())
+
+  @@index([medicalVisitId])
+}
+
+// Vietnam vaccination schedule template
+model VaccinationSchedule {
+  id          String @id @default(auto()) @map("_id") @db.ObjectId
+  name        String @unique // English name
+  nameVi      String // Vietnamese name
+  ageMonths   Int?   // Age in months when due
+  ageWeeks    Int?   // Age in weeks for newborn vaccines
+  description String?
+  required    Boolean @default(true)
+  order       Int    @default(0)
+
+  vaccinations Vaccination[]
+
+  @@index([order])
+}
+
+// Vaccination record model
+model Vaccination {
+  id            String   @id @default(auto()) @map("_id") @db.ObjectId
+  childId       String   @db.ObjectId
+  child         Child    @relation(fields: [childId], references: [id], onDelete: Cascade)
+  
+  scheduleId    String?  @db.ObjectId
+  schedule      VaccinationSchedule? @relation(fields: [scheduleId], references: [id])
+
+  name          String?  // For custom vaccines not in schedule
+  dueDate       DateTime
+  completedDate DateTime?
+  status        String   // "pending" | "completed" | "overdue" | "skipped"
+  location      String?  // Hospital/clinic name
+  notes         String?
+  reactions     String?  // Post-vaccination reactions
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  media         Media[]
+
+  @@index([childId])
+  @@index([status])
+}
+
+// Growth record model
+model GrowthRecord {
+  id                String   @id @default(auto()) @map("_id") @db.ObjectId
+  childId           String   @db.ObjectId
+  child             Child    @relation(fields: [childId], references: [id], onDelete: Cascade)
+
+  measureDate       DateTime
+  height            Float?   // in cm
+  weight            Float?   // in kg
+  headCircumference Float?   // in cm
+  notes             String?
+  createdAt         DateTime @default(now())
+
+  @@index([childId])
+  @@index([measureDate])
+}
+
+// Feeding log model
+model FeedingLog {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  childId     String   @db.ObjectId
+  child       Child    @relation(fields: [childId], references: [id], onDelete: Cascade)
+
+  feedingDate DateTime
+  type        String   // "breastfeeding" | "formula" | "solid"
+  foodItems   String?  // JSON string or comma-separated
+  amount      Float?
+  unit        String?  // "ml" | "oz" | "g"
+  notes       String?
+  createdAt   DateTime @default(now())
+
+  @@index([childId])
+  @@index([feedingDate])
+}
+
+// Allergy model
+model Allergy {
+  id             String   @id @default(auto()) @map("_id") @db.ObjectId
+  childId        String   @db.ObjectId
+  child          Child    @relation(fields: [childId], references: [id], onDelete: Cascade)
+
+  allergen       String
+  severity       String?  // "mild" | "moderate" | "severe"
+  reaction       String?
+  discoveredDate DateTime
+  notes          String?
+  createdAt      DateTime @default(now())
+
+  @@index([childId])
+}
+
+// Activity log model (sleep, diaper, etc.)
+model ActivityLog {
+  id           String   @id @default(auto()) @map("_id") @db.ObjectId
+  childId      String   @db.ObjectId
+  child        Child    @relation(fields: [childId], references: [id], onDelete: Cascade)
+
+  activityDate DateTime
+  type         String   // "sleep" | "diaper" | "bath" | "other"
+  duration     String?  // For sleep duration
+  notes        String?
+  createdAt    DateTime @default(now())
+
+  @@index([childId])
+  @@index([activityDate])
+}
+
+// Milestone model
+model Milestone {
+  id           String   @id @default(auto()) @map("_id") @db.ObjectId
+  childId      String   @db.ObjectId
+  child        Child    @relation(fields: [childId], references: [id], onDelete: Cascade)
+
+  title        String
+  category     String?  // "physical" | "cognitive" | "social" | "language"
+  achievedDate DateTime
+  notes        String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  media        Media[]
+
+  @@index([childId])
+  @@index([achievedDate])
+}
+
+// Media model for photos and documents
+model Media {
+  id           String   @id @default(auto()) @map("_id") @db.ObjectId
+  childId      String   @db.ObjectId
+  child        Child    @relation(fields: [childId], references: [id], onDelete: Cascade)
+
+  relatedId    String?  @db.ObjectId  // ID of related entity
+  relatedType  String?  // "medical_visit" | "vaccination" | "milestone" | "general"
+
+  url          String   // Cloudinary URL
+  publicId     String   // Cloudinary public ID for deletion
+  type         String   // "image" | "document"
+  caption      String?
+  takenDate    DateTime?
+  createdAt    DateTime @default(now())
+
+  medicalVisit   MedicalVisit? @relation(fields: [relatedId], references: [id], onDelete: Cascade)
+  vaccination    Vaccination?  @relation(fields: [relatedId], references: [id], onDelete: Cascade)
+  milestone      Milestone?    @relation(fields: [relatedId], references: [id], onDelete: Cascade)
+
+  @@index([childId])
+  @@index([relatedType])
+}
+
+// Reminder model
+model Reminder {
+  id           String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId       String   @db.ObjectId
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  childId      String?  @db.ObjectId
+  child        Child?   @relation(fields: [childId], references: [id], onDelete: Cascade)
+
+  type         String   // "vaccination" | "medical_visit" | "medication" | "birthday" | "milestone"
+  title        String
+  reminderDate DateTime
+  sent         Boolean  @default(false)
+  dismissed    Boolean  @default(false)
+  relatedId    String?  @db.ObjectId
+  createdAt    DateTime @default(now())
+
+  @@index([userId])
+  @@index([reminderDate])
+  @@index([sent])
+}
+
+// Family member model for sharing
+model FamilyMember {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  childId   String   @db.ObjectId
+  child     Child    @relation(fields: [childId], references: [id], onDelete: Cascade)
+
+  email     String
+  role      String   // "admin" | "editor" | "viewer"
+  status    String   @default("pending") // "pending" | "accepted" | "rejected"
+  createdAt DateTime @default(now())
+
+  @@index([childId])
+  @@index([email])
+}

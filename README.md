@@ -1,36 +1,180 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# BabyVerse - Child Management Application
+
+A comprehensive web application for managing child health information from birth to school age.
+
+## Features (MVP)
+
+✅ **Authentication**
+- Email/Password registration and login
+- Google OAuth integration
+- Session management with NextAuth.js
+
+✅ **Multi-Child Management**
+- Create and manage multiple child profiles
+- Child switcher with avatars
+- Soft delete functionality
+
+✅ **Dashboard**
+- Overview of child information
+- Birth statistics display
+- Quick action cards
+
+🚧 **Coming Soon (Phase 2)**
+- Vaccination schedule tracking (Vietnam MOH standard)
+- Growth tracking with WHO charts
+- Medical visit records
+- Nutrition & feeding logs
+- Milestone tracking
+- Family sharing with roles
+- Reminders & notifications
+
+## Tech Stack
+
+- **Frontend**: Next.js 16 (App Router), TypeScript, Tailwind CSS
+- **UI Components**: Shadcn UI
+- **Backend**: Next.js API Routes
+- **Database**: MongoDB with Prisma ORM
+- **Auth**: NextAuth.js (Email + Google OAuth)
+- **File Storage**: Cloudinary (planned)
+- **Forms**: React Hook Form + Zod
+- **Charts**: Recharts (planned)
 
 ## Getting Started
 
-First, run the development server:
+### Prerequisites
 
+- Node.js 20.9+
+- MongoDB (local or MongoDB Atlas)
+- Google OAuth credentials (optional)
+- Cloudinary account (optional, for Phase 2)
+
+### Installation
+
+1. Clone the repository
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+git clone <repository-url>
+cd babyverse
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+2. Install dependencies
+```bash
+npm install
+```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+3. Set up environment variables
+```bash
+cp .env.example .env
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Edit `.env` and add your MongoDB connection string and other credentials:
+```env
+DATABASE_URL="mongodb://localhost:27017/babyverse"
+NEXTAUTH_URL="http://localhost:3000"
+NEXTAUTH_SECRET="your-secret-key"
+# Optional: Google OAuth
+GOOGLE_CLIENT_ID="your-google-client-id"
+GOOGLE_CLIENT_SECRET="your-google-client-secret"
+```
 
-## Learn More
+4. Set up the database
+```bash
+# Generate Prisma client
+npm run prisma:generate
 
-To learn more about Next.js, take a look at the following resources:
+# Push schema to MongoDB
+npx prisma db push
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+# Seed Vietnam vaccination schedule
+npm run prisma:seed
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+5. Run the development server
+```bash
+npm run dev
+```
 
-## Deploy on Vercel
+6. Open [http://localhost:3000](http://localhost:3000)
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Project Structure
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```
+babyverse/
+├── prisma/
+│   ├── schema.prisma      # Database schema
+│   └── seed.ts            # Vaccination schedule seed data
+├── src/
+│   ├── app/
+│   │   ├── (auth)/        # Auth pages (login, register)
+│   │   ├── (dashboard)/   # Protected app pages
+│   │   ├── api/           # API routes
+│   │   └── layout.tsx     # Root layout
+│   ├── components/
+│   │   ├── ui/            # Shadcn UI components
+│   │   └── children/      # Child-related components
+│   ├── lib/
+│   │   ├── auth.ts        # NextAuth configuration
+│   │   ├── prisma.ts      # Prisma client
+│   │   └── cloudinary.ts  # Cloudinary helpers
+│   └── types/
+│       └── index.ts       # Type definitions
+├── .env                   # Environment variables
+└── package.json
+```
+
+## Available Scripts
+
+- `npm run dev` - Start development server
+- `npm run build` - Build for production
+- `npm start` - Start production server
+- `npm run lint` - Run ESLint
+- `npm run prisma:generate` - Generate Prisma client
+- `npm run prisma:seed` - Seed database
+
+## API Routes
+
+### Authentication
+- `POST /api/auth/register` - Register new user
+- `POST /api/auth/[...nextauth]` - NextAuth handler
+
+### Children
+- `GET /api/children` - List all children for current user
+- `POST /api/children` - Create new child
+- `GET /api/children/[id]` - Get child details
+- `PATCH /api/children/[id]` - Update child
+- `DELETE /api/children/[id]` - Soft delete child
+
+## Database Schema
+
+The application uses 14+ models:
+- User (authentication)
+- Child (profiles)
+- MedicalVisit
+- Vaccination & VaccinationSchedule
+- GrowthRecord
+- FeedingLog
+- Allergy
+- ActivityLog
+- Milestone
+- Media
+- Reminder
+- FamilyMember
+
+See `prisma/schema.prisma` for complete schema.
+
+## Contributing
+
+This is a personal project. Contributions, issues, and feature requests are welcome!
+
+## License
+
+MIT
+
+## Acknowledgments
+
+- Vietnam Ministry of Health for vaccination schedule
+- WHO growth standards
+- Shadcn UI for beautiful components
+
+---
+
+Built with ❤️ for mothers and families in Vietnam
