@@ -106,7 +106,7 @@ export function VaccineDetailsModal({ vaccination, isOpen, onClose, onUpdate, on
                                 <p className="text-sm text-muted-foreground flex items-center">
                                     <Calendar className="w-3 h-3 mr-1" /> Ngày dự kiến
                                 </p>
-                                <p className="font-medium">{format(new Date(vaccination.dueDate), 'dd/MM/yyyy', { locale: vi })}</p>
+                                <p className="font-medium">{new Date(vaccination.dueDate).toLocaleDateString('vi-VN', { timeZone: 'Asia/Ho_Chi_Minh', day: '2-digit', month: '2-digit', year: 'numeric' })}</p>
                             </div>
                             <div className="space-y-1">
                                 <p className="text-sm text-muted-foreground flex items-center">
@@ -125,7 +125,7 @@ export function VaccineDetailsModal({ vaccination, isOpen, onClose, onUpdate, on
                                     <AlertCircle className="w-3 h-3 mr-1" /> Ngày đã tiêm
                                 </p>
                                 <p className="font-medium text-green-600">
-                                    {format(new Date(vaccination.completedDate), 'dd/MM/yyyy', { locale: vi })}
+                                    {new Date(vaccination.completedDate).toLocaleDateString('vi-VN', { timeZone: 'Asia/Ho_Chi_Minh', day: '2-digit', month: '2-digit', year: 'numeric' })}
                                 </p>
                             </div>
                         )}

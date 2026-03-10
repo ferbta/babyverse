@@ -128,6 +128,7 @@ export function ReminderCard({ reminder, onUpdate }: ReminderCardProps) {
                                     <Calendar className="w-4 h-4" />
                                     <span>
                                         {new Date(reminder.reminderDate).toLocaleString('vi-VN', {
+                                            timeZone: 'Asia/Ho_Chi_Minh',
                                             day: '2-digit',
                                             month: '2-digit',
                                             year: 'numeric',
@@ -135,6 +136,7 @@ export function ReminderCard({ reminder, onUpdate }: ReminderCardProps) {
                                             minute: '2-digit',
                                         })}
                                     </span>
+
                                 </div>
                                 <div className="flex items-center gap-2">
                                     <Clock className="w-4 h-4" />
