@@ -6,6 +6,7 @@ import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Dialog, DialogContent } from '@/components/ui/dialog'
 import { Trash2, Calendar, X, ImageIcon } from 'lucide-react'
+import { formatDate } from '@/lib/dateUtils'
 
 interface Media {
     id: string
@@ -44,7 +45,7 @@ export function PhotoGrid({ photos, onDelete }: PhotoGridProps) {
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                 {photos.map((photo) => {
                     const date = photo.takenDate
-                        ? new Date(photo.takenDate).toLocaleDateString('vi-VN', {
+                        ? formatDate(photo.takenDate, {
                             day: 'numeric',
                             month: 'short',
                             year: 'numeric'
@@ -115,7 +116,7 @@ export function PhotoGrid({ photos, onDelete }: PhotoGridProps) {
                                 {selectedPhoto.takenDate && (
                                     <div className="flex items-center text-gray-300 text-sm mb-2">
                                         <Calendar className="w-4 h-4 mr-2" />
-                                        {new Date(selectedPhoto.takenDate).toLocaleDateString('vi-VN', {
+                                        {formatDate(selectedPhoto.takenDate, {
                                             day: 'numeric',
                                             month: 'long',
                                             year: 'numeric'

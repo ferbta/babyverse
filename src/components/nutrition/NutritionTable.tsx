@@ -4,6 +4,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Badge } from '@/components/ui/badge'
 import { NutritionLog } from '@/types'
 import { Calendar, Utensils } from 'lucide-react'
+import { formatDate } from '@/lib/dateUtils'
 
 interface NutritionTableProps {
     data: NutritionLog[]
@@ -78,7 +79,7 @@ export function NutritionTable({ data }: NutritionTableProps) {
                                             <div className="flex items-center gap-2">
                                                 <Calendar className="w-4 h-4 text-muted-foreground" />
                                                 <span className="text-sm">
-                                                    {new Date(log.feedingDate).toLocaleString('vi-VN', {
+                                                    {formatDate(log.feedingDate, {
                                                         day: '2-digit',
                                                         month: '2-digit',
                                                         year: 'numeric',
@@ -123,7 +124,7 @@ export function NutritionTable({ data }: NutritionTableProps) {
                                         {typeInfo.emoji} {typeInfo.label}
                                     </Badge>
                                     <span className="text-xs text-muted-foreground">
-                                        {new Date(log.feedingDate).toLocaleString('vi-VN', {
+                                        {formatDate(log.feedingDate, {
                                             day: '2-digit',
                                             month: '2-digit',
                                             hour: '2-digit',

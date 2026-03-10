@@ -4,6 +4,7 @@ import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Calendar, Trash2, Edit2, Star } from 'lucide-react'
 import { Button } from '@/components/ui/button'
+import { formatDate } from '@/lib/dateUtils'
 
 interface Milestone {
     id: string
@@ -42,7 +43,7 @@ export function MilestoneTimeline({ milestones, onDelete, onEdit }: MilestoneTim
             {milestones.map((milestone, index) => {
                 const category = milestone.category as keyof typeof categories || 'physical'
                 const catInfo = categories[category] || categories.physical
-                const date = new Date(milestone.achievedDate).toLocaleDateString('vi-VN', {
+                const date = formatDate(milestone.achievedDate, {
                     day: 'numeric',
                     month: 'long',
                     year: 'numeric'
