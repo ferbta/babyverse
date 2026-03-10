@@ -85,6 +85,18 @@ export function getDaysDifference(date1: Date, date2: Date): number {
 }
 
 /**
+ * Format a date string or Date object into localized Vietnamese string with GMT+7
+ */
+export function formatDate(date: string | Date | null, options: Intl.DateTimeFormatOptions = { day: '2-digit', month: '2-digit', year: 'numeric' }): string {
+    if (!date) return ''
+    const d = typeof date === 'string' ? new Date(date) : date
+    return new Intl.DateTimeFormat('vi-VN', {
+        ...options,
+        timeZone: TIMEZONE
+    }).format(d)
+}
+
+/**
  * Convert a date from database (ISO string) to local date string for input fields
  */
 export function formatDateForInput(isoString: string | Date): string {

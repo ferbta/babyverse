@@ -9,6 +9,7 @@ import { Syringe, Calendar, MapPin, CheckCircle, Clock, AlertCircle, MoreVertica
 import { Vaccination } from '@/types'
 import { useState } from 'react'
 import { toast } from 'sonner'
+import { formatDate } from '@/lib/dateUtils'
 
 import { VaccineDetailsModal } from './VaccineDetailsModal'
 
@@ -143,14 +144,14 @@ export function VaccineCard({ vaccination, onUpdate, onDelete }: VaccineCardProp
                         <div className="flex items-center text-sm text-gray-600 dark:text-gray-300">
                             <Calendar className="w-4 h-4 mr-2 text-purple-500" />
                             <span className="font-medium mr-1">Ngày dự kiến:</span>
-                            {format(new Date(vaccination.dueDate), 'dd/MM/yyyy', { locale: vi })}
+                            {formatDate(vaccination.dueDate)}
                         </div>
 
                         {vaccination.completedDate && (
                             <div className="flex items-center text-sm text-green-600 dark:text-green-400">
                                 <CheckCircle className="w-4 h-4 mr-2" />
                                 <span className="font-medium mr-1">Ngày tiêm:</span>
-                                {format(new Date(vaccination.completedDate), 'dd/MM/yyyy', { locale: vi })}
+                                {formatDate(vaccination.completedDate)}
                             </div>
                         )}
 

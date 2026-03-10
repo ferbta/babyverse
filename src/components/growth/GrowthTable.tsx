@@ -11,6 +11,7 @@ import {
 } from '@/components/ui/table'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
+import { formatDate } from '@/lib/dateUtils'
 
 interface GrowthTableProps {
     data: GrowthRecord[]
@@ -47,7 +48,7 @@ export function GrowthTable({ data }: GrowthTableProps) {
                             {sortedData.map((record) => (
                                 <TableRow key={record.id}>
                                     <TableCell className="font-medium">
-                                        {new Date(record.measureDate).toLocaleDateString('vi-VN')}
+                                        {formatDate(record.measureDate)}
                                     </TableCell>
                                     <TableCell>
                                         {record.weight ? (
