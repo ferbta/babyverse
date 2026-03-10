@@ -11,10 +11,13 @@ interface ReminderListProps {
 
 export function ReminderList({ reminders, onUpdate }: ReminderListProps) {
     const now = new Date()
+    // Local time string for comparison to avoid timezone offset issues
+    const localNow = new Date(new Intl.DateTimeFormat('en-US', { timeZone: 'Asia/Ho_Chi_Minh' }).format(now))
+
 
     // Categorize reminders
-    const overdue = reminders.filter(r => !r.dismissed && new Date(r.reminderDate) < now)
-    const upcoming = reminders.filter(r => !r.dismissed && new Date(r.reminderDate) >= now)
+    const overdue = reminders.filter(r => !r.dismissed && new Date(r.reminderDate) < localNow)
+    const upcoming = reminders.filter(r => !r.dismissed && new Date(r.reminderDate) >= localNow)
     const completed = reminders.filter(r => r.dismissed)
 
     const EmptyState = ({ icon: Icon, title, description }: { icon: any; title: string; description: string }) => (

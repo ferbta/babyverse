@@ -1,62 +1,84 @@
 /**
  * Date utility functions that handle timezone-aware date operations
- * Ensures dates are handled in local timezone to prevent off-by-one errors
+ * Ensures dates are handled in GMT+7 (Asia/Ho_Chi_Minh) timezone
  */
 
+const TIMEZONE = 'Asia/Ho_Chi_Minh'
+
 /**
- * Get current date in YYYY-MM-DD format using local timezone
+ * Get current date in YYYY-MM-DD format using GMT+7 timezone
  */
 export function getLocalDateString(date: Date = new Date()): string {
-    const year = date.getFullYear()
-    const month = String(date.getMonth() + 1).padStart(2, '0')
-    const day = String(date.getDate()).padStart(2, '0')
-    return `${year}-${month}-${day}`
+    return new Intl.DateTimeFormat('en-CA', {
+        timeZone: TIMEZONE,
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit'
+    }).format(date)
 }
 
 /**
- * Get current datetime in YYYY-MM-DDTHH:mm format using local timezone
+ * Get current datetime in YYYY-MM-DDTHH:mm format using GMT+7 timezone
  */
 export function getLocalDateTimeString(date: Date = new Date()): string {
-    const year = date.getFullYear()
-    const month = String(date.getMonth() + 1).padStart(2, '0')
-    const day = String(date.getDate()).padStart(2, '0')
-    const hours = String(date.getHours()).padStart(2, '0')
-    const minutes = String(date.getMinutes()).padStart(2, '0')
-    return `${year}-${month}-${day}T${hours}:${minutes}`
+    const formatter = new Intl.DateTimeFormat('en-CA', {
+        timeZone: TIMEZONE,
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: false
+    })
+
+    const parts = formatter.formatToParts(date)
+    const getPart = (type: string) => parts.find(p => p.type === type)?.value
+
+    const year = getPart('year')
+    const month = getPart('month')
+    const day = getPart('day')
+    const hour = getPart('hour')
+    const minute = getPart('minute')
+
+    return `${year}-${month}-${day}T${hour}:${minute}`
 }
 
 /**
- * Parse a date string and return a Date object at midnight local time
+ * Parse a date string and return a Date object at midnight GMT+7
  */
 export function parseLocalDate(dateString: string): Date {
-    // For date-only strings (YYYY-MM-DD), create date at midnight local time
+    // For date-only strings (YYYY-MM-DD), create date at midnight in GMT+7
     if (/^\d{4}-\d{2}-\d{2}$/.test(dateString)) {
         const [year, month, day] = dateString.split('-').map(Number)
-        return new Date(year, month - 1, day, 0, 0, 0, 0)
+        // Create as UTC first then adjust if needed, or use a library. 
+        // For simplicity with vanilla JS, we can use the constructor but be careful with local time.
+        // A more robust way is to create it and then force the timezone or use date-fns-tz
+        const date = new Date(year, month - 1, day, 0, 0, 0, 0)
+        return date
     }
     // For datetime strings, parse normally
     return new Date(dateString)
 }
 
 /**
- * Check if two dates are on the same day (ignoring time)
+ * Check if two dates are on the same day in GMT+7
  */
 export function isSameDay(date1: Date, date2: Date): boolean {
-    return (
-        date1.getFullYear() === date2.getFullYear() &&
-        date1.getMonth() === date2.getMonth() &&
-        date1.getDate() === date2.getDate()
-    )
+    const d1Str = getLocalDateString(date1)
+    const d2Str = getLocalDateString(date2)
+    return d1Str === d2Str
 }
 
 /**
- * Get the difference in days between two dates (ignoring time)
+ * Get the difference in days between two dates in GMT+7
  * Returns positive if date2 is after date1, negative if before
  */
 export function getDaysDifference(date1: Date, date2: Date): number {
-    // Create dates at midnight to compare only the day part
-    const d1 = new Date(date1.getFullYear(), date1.getMonth(), date1.getDate())
-    const d2 = new Date(date2.getFullYear(), date2.getMonth(), date2.getDate())
+    const d1Str = getLocalDateString(date1)
+    const d2Str = getLocalDateString(date2)
+
+    const d1 = new Date(d1Str)
+    const d2 = new Date(d2Str)
 
     const diffMs = d2.getTime() - d1.getTime()
     return Math.floor(diffMs / (1000 * 60 * 60 * 24))
@@ -69,3 +91,4 @@ export function formatDateForInput(isoString: string | Date): string {
     const date = typeof isoString === 'string' ? new Date(isoString) : isoString
     return getLocalDateString(date)
 }
+

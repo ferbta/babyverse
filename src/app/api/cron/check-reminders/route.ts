@@ -39,6 +39,7 @@ export async function GET(req: Request) {
 
         const results = await Promise.all(pendingReminders.map(async (reminder) => {
             const childName = reminder.child?.name || 'con'
+            // format from date-fns will use process.env.TZ on the server
             const dateStr = format(reminder.reminderDate, 'HH:mm dd/MM/yyyy', { locale: vi })
 
             const html = `
