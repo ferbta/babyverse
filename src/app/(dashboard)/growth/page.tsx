@@ -114,7 +114,11 @@ export default function GrowthPage() {
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                     {/* Charts area */}
                     <div className="lg:col-span-2 space-y-6">
-                        <GrowthCharts data={records} />
+                        <GrowthCharts
+                            data={records}
+                            gender={selectedChild.gender}
+                            birthDate={selectedChild.birthDate}
+                        />
                         <GrowthTable data={records} />
                     </div>
 
