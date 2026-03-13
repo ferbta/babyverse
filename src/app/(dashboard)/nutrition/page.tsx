@@ -4,19 +4,22 @@ import { useState, useEffect } from 'react'
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
-import { Utensils, Baby, AlertCircle } from 'lucide-react'
+import { Utensils, Baby, AlertCircle, Calendar as CalendarIcon, X } from 'lucide-react'
 import { useChildren } from '@/components/providers/ChildProvider'
 import { AddNutritionLogModal } from '@/components/nutrition/AddNutritionLogModal'
 import { NutritionTable } from '@/components/nutrition/NutritionTable'
 import { NutritionStats } from '@/components/nutrition/NutritionStats'
 import { NutritionLog } from '@/types'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
+import { Input } from '@/components/ui/input'
+import { getLocalDateString, isSameDay } from '@/lib/dateUtils'
 
 export default function NutritionPage() {
     const { selectedChild, loading: childLoading } = useChildren()
     const [logs, setLogs] = useState<NutritionLog[]>([])
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState('')
+    const [filterDate, setFilterDate] = useState(getLocalDateString())
 
     const fetchNutritionLogs = async () => {
         if (!selectedChild?.id) return
@@ -40,6 +43,27 @@ export default function NutritionPage() {
     useEffect(() => {
         fetchNutritionLogs()
     }, [selectedChild?.id])
+
+    // Filter and sort logs
+    const filteredLogs = filterDate
+        ? logs.filter(log => getLocalDateString(new Date(log.feedingDate)) === filterDate)
+        : logs
+
+    const sortedLogs = [...filteredLogs].sort((a, b) => {
+        const dateA = new Date(a.feedingDate)
+        const dateB = new Date(b.feedingDate)
+        const now = new Date()
+
+        const isTodayA = isSameDay(dateA, now)
+        const isTodayB = isSameDay(dateB, now)
+
+        // Today's records always first
+        if (isTodayA && !isTodayB) return -1
+        if (!isTodayA && isTodayB) return 1
+
+        // Otherwise sort by time descending
+        return dateB.getTime() - dateA.getTime()
+    })
 
     if (childLoading) {
         return (
@@ -82,7 +106,26 @@ export default function NutritionPage() {
                         Theo dõi bữa ăn và dinh dưỡng của <strong>{selectedChild.name}</strong>
                     </p>
                 </div>
-                <AddNutritionLogModal childId={selectedChild.id} onLogAdded={fetchNutritionLogs} />
+                <div className="flex items-center gap-3">
+                    <div className="relative max-w-[200px]">
+                        <CalendarIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground pointer-events-none" />
+                        <Input
+                            type="date"
+                            className="pl-9 pr-8"
+                            value={filterDate}
+                            onChange={(e) => setFilterDate(e.target.value)}
+                        />
+                        {filterDate && (
+                            <button
+                                onClick={() => setFilterDate('')}
+                                className="absolute right-2 top-1/2 -translate-y-1/2 p-1 hover:bg-muted rounded-full transition-colors"
+                            >
+                                <X className="w-3 h-3 text-muted-foreground" />
+                            </button>
+                        )}
+                    </div>
+                    <AddNutritionLogModal childId={selectedChild.id} onLogAdded={fetchNutritionLogs} />
+                </div>
             </div>
 
             {error && (
@@ -115,7 +158,7 @@ export default function NutritionPage() {
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                     {/* Main content area */}
                     <div className="lg:col-span-2 space-y-6">
-                        <NutritionTable data={logs} />
+                        <NutritionTable data={sortedLogs} />
                     </div>
 
                     {/* Stats and tips area */}
