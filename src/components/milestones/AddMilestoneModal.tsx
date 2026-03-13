@@ -25,7 +25,7 @@ import {
     SelectValue,
 } from '@/components/ui/select'
 import { Plus, Loader2, Sparkles } from 'lucide-react'
-import { getLocalDateString } from '@/lib/dateUtils'
+import { getLocalDateString, toISOWithTimezone } from '@/lib/dateUtils'
 
 const milestoneSchema = z.object({
     title: z.string().min(1, 'Tiêu đề là bắt buộc'),
@@ -75,7 +75,10 @@ export function AddMilestoneModal({ childId, onMilestoneAdded }: AddMilestoneMod
             const response = await fetch(`/api/children/${childId}/milestones`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(data),
+                body: JSON.stringify({
+                    ...data,
+                    achievedDate: toISOWithTimezone(data.achievedDate),
+                }),
             })
 
             if (response.ok) {

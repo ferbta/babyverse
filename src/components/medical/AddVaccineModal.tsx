@@ -9,7 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Textarea } from '@/components/ui/textarea'
 import { toast } from 'sonner'
 import { Plus } from 'lucide-react'
-import { getLocalDateString } from '@/lib/dateUtils'
+import { getLocalDateString, toISOWithTimezone } from '@/lib/dateUtils'
 
 interface AddVaccineModalProps {
     childId: string
@@ -38,6 +38,7 @@ export function AddVaccineModal({ childId, isOpen, onClose, onSuccess }: AddVacc
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     ...formData,
+                    dueDate: toISOWithTimezone(formData.dueDate),
                     childId,
                 }),
             })
