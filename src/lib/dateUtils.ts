@@ -103,4 +103,23 @@ export function formatDateForInput(isoString: string | Date): string {
     const date = typeof isoString === 'string' ? new Date(isoString) : isoString
     return getLocalDateString(date)
 }
+/**
+ * Convert a local datetime/date string (from input fields) to ISO string with GMT+7 offset.
+ * Example: '2024-03-20T10:00' -> '2024-03-20T10:00:00.000+07:00'
+ */
+export function toISOWithTimezone(dateString: string): string {
+    if (!dateString) return ''
 
+    // If it's just a date (YYYY-MM-DD), add midnight and the offset
+    if (/^\d{4}-\d{2}-\d{2}$/.test(dateString)) {
+        return `${dateString}T00:00:00.000+07:00`
+    }
+
+    // If it's a datetime-local (YYYY-MM-DDTHH:mm), add seconds and the offset
+    if (/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}$/.test(dateString)) {
+        return `${dateString}:00.000+07:00`
+    }
+
+    // Fallback for other formats
+    return new Date(dateString).toISOString()
+}

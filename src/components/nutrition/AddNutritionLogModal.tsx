@@ -25,7 +25,7 @@ import {
     SelectValue,
 } from '@/components/ui/select'
 import { Plus, Loader2 } from 'lucide-react'
-import { getLocalDateTimeString } from '@/lib/dateUtils'
+import { getLocalDateTimeString, toISOWithTimezone } from '@/lib/dateUtils'
 
 
 const nutritionSchema = z.object({
@@ -74,7 +74,7 @@ export function AddNutritionLogModal({ childId, onLogAdded }: AddNutritionLogMod
 
         try {
             const payload = {
-                feedingDate: data.feedingDate,
+                feedingDate: toISOWithTimezone(data.feedingDate),
                 type: data.type,
                 foodItems: data.foodItems || null,
                 amount: data.amount ? parseFloat(data.amount) : null,

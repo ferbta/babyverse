@@ -25,7 +25,7 @@ import {
 } from '@/components/ui/select'
 import { Plus, Loader2 } from 'lucide-react'
 import { useChildren } from '@/components/providers/ChildProvider'
-import { getLocalDateTimeString } from '@/lib/dateUtils'
+import { getLocalDateTimeString, toISOWithTimezone } from '@/lib/dateUtils'
 
 const reminderSchema = z.object({
     type: z.enum(['vaccination', 'medical_visit', 'medication', 'birthday', 'milestone']),
@@ -69,7 +69,7 @@ export function AddReminderModal({ onReminderAdded }: AddReminderModalProps) {
             const payload = {
                 type: data.type,
                 title: data.title,
-                reminderDate: data.reminderDate,
+                reminderDate: toISOWithTimezone(data.reminderDate),
                 childId: data.childId || null,
             }
 
